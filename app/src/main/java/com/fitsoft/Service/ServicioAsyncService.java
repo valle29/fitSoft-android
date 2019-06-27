@@ -64,7 +64,14 @@ public class ServicioAsyncService extends AsyncTask<String, String, HashMap<Stri
             // handle issues
             int statusCode = urlConnection.getResponseCode();
             if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                // handle unauthorized (if service requires user login)
+                InputStream in = new BufferedInputStream(
+                        urlConnection.getErrorStream());
+                String resultado = getResponseText(in);
+                resultados.put("IsValid", false);
+                resultados.put("StatusCode",statusCode);
+                resultados.put("Resultado", resultado);
+                onTaskDownloadedFinished(resultados);
+                return resultados;
             } else if (statusCode != HttpURLConnection.HTTP_OK) {
                 // handle any other errors, like 404, 500,..
                 resultados.put("IsValid", false);

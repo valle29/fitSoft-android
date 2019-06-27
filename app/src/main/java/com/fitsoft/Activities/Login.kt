@@ -1,4 +1,4 @@
-package com.fitsoft.Actividades
+package com.fitsoft.Activities
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -12,7 +12,6 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -20,7 +19,6 @@ import android.widget.TextView
 import com.fitsoft.DataClass.BadRequest
 import com.fitsoft.DataClass.LoginRequest
 import com.fitsoft.DataClass.LoginResponse
-import com.fitsoft.MainActivity
 import com.fitsoft.R
 import com.fitsoft.Service.AsyncTaskListener
 import com.fitsoft.Service.ServicioAsyncService
@@ -29,7 +27,6 @@ import com.fitsoft.Utils.AppStatus
 import com.fitsoft.Utils.Funciones
 import com.fitsoft.Utils.Preferencias
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.android.synthetic.main.view_login.*
 import java.util.HashMap
@@ -43,10 +40,6 @@ class Login : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_login)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
-        toolbar_title.text = "Login"
         this.gson = Gson()
 
         // Set up the view_login form.
@@ -165,10 +158,9 @@ class Login : AppCompatActivity(){
                 hideKeyboard()
                 var oData = LoginRequest(emailStr,passwordStr)
                 var servicioAsyncService = ServicioAsyncService(this, WebService().Login, gson!!.toJson(oData))
-                servicioAsyncService.setOnCompleteListener(object : AsyncTaskListener {
 
+                servicioAsyncService.setOnCompleteListener(object : AsyncTaskListener {
                     override fun onTaskStart() {
-                        toolbar.visibility = View.GONE
                         login_progress.visibility = View.VISIBLE
                         login_form.visibility = View.GONE
                     }
@@ -183,7 +175,6 @@ class Login : AppCompatActivity(){
                             else
                                 badRequest = gson!!.fromJson<Any>(result["Resultado"].toString(), BadRequest::class.java) as BadRequest?
                         } catch (error: Exception) {
-                            toolbar.visibility = View.VISIBLE
                             login_progress.visibility = View.GONE
                             login_form.visibility = View.VISIBLE
                             val messageError = "Ocurrio un error inesperado"
@@ -202,34 +193,39 @@ class Login : AppCompatActivity(){
                     }
 
                     override fun onTaskComplete(result: HashMap<String, Any>) {
-                        //textView.text = loginResponse!!.message
-                        if (loginResponse!!.message.contains("Bienvenido")) {
+
+                        if(Integer.parseInt(result["StatusCode"].toString()) == 0){
                             var preferencias = Preferencias(this@Login)
                             //To finish Main Activity
                             preferencias.sesion = false
                             startActivity(Intent(this@Login, MainActivity::class.java))
                             finish()
+                        } else if(Integer.parseInt(result["StatusCode"].toString()) == 401){
+                            if (badRequest!!.message.contains("Contraseña incorrectas")){
+                                focusView = password
+                                login_progress.visibility = View.GONE
+                                login_form.visibility = View.VISIBLE
+                                password.error = "Contraseña incorrecta"
+                                cancel = true
+                            }
+                            else if(badRequest!!.message.contains("El correo no existe")) {
+                                login_progress.visibility = View.GONE
+                                login_form.visibility = View.VISIBLE
+                                email.error = badRequest!!.message
+                                focusView = email
+                                cancel = true
+                            }
+                        }
 
-                        } else if (badRequest!!.message.contains("El correo no existe")) {
-                            toolbar.visibility = View.VISIBLE
-                            login_progress.visibility = View.GONE
-                            login_form.visibility = View.VISIBLE
-                            email.error = badRequest!!.message
-                        }
-                        else if(badRequest!!.message.contains("Contraseña incorrectas")){
-                            toolbar.visibility = View.VISIBLE
-                            login_progress.visibility = View.GONE
-                            login_form.visibility = View.VISIBLE
-                            password.error = badRequest!!.message
-                        }
                     }
 
                     override  fun onTaskCancelled(result: HashMap<String, Any>) {
-                        //progressdialog.dismiss()
+                        toolbar.visibility = View.VISIBLE
+                        login_progress.visibility = View.GONE
+                        login_form.visibility = View.VISIBLE
                     }
                 })
                 servicioAsyncService.execute()
-
             }
         }
     }
