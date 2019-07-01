@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="foods_array">
+        <item>Desayuno</item>
+        <item>Colación Matutina</item>
+        <item>Comida</item>
+        <item>Colación Vespertina</item>
+        <item>Cena</item>
+    </string-array>
+</resources>
