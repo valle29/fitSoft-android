@@ -7,6 +7,7 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+import android.view.View;
 
 import java.util.List;
 
@@ -24,6 +25,15 @@ public class Funciones {
                 dialog.dismiss();
             }
         });
+        return builder;
+    }
+
+    public static AlertDialog.Builder calendarAlert(Context context, View alertLayout) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(alertLayout)
+                .setCancelable(true);
+
         return builder;
     }
 }

@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import com.fitsoft.Activities.MainActivity
 
 import com.fitsoft.R
-import kotlinx.android.synthetic.main.toolbar.*
 
 class HomeFragment : Fragment() {
 

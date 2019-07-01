@@ -27,7 +27,6 @@ import com.fitsoft.Utils.AppStatus
 import com.fitsoft.Utils.Funciones
 import com.fitsoft.Utils.Preferencias
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.android.synthetic.main.view_login.*
 import java.util.HashMap
 
@@ -220,7 +219,6 @@ class Login : AppCompatActivity(){
                     }
 
                     override  fun onTaskCancelled(result: HashMap<String, Any>) {
-                        toolbar.visibility = View.VISIBLE
                         login_progress.visibility = View.GONE
                         login_form.visibility = View.VISIBLE
                     }
