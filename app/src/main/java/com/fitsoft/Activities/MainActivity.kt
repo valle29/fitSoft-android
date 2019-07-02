@@ -14,10 +14,13 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
-import com.fitsoft.Fragments.MyDietFragment
+import android.view.View
+import com.fitsoft.Fragments.MyDiet.MyDietFragment
 import com.fitsoft.Fragments.HomeFragment
 import com.fitsoft.R
 import com.fitsoft.Utils.Preferencias
+import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.fragment_my_diet.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
